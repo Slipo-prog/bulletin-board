@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои отклики{% endblock %}
+
+{% block content %}
+<h1>📩 Отклики на мои объявления</h1>
+
+<!-- Фильтр -->
+<form method="get" style="margin-bottom: 20px;">
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <label>Фильтр по объявлению:</label>
+        <select name="post_id" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; flex: 1;">
+            <option value="">Все объявления</option>
+            {% for post in user.post_set.all %}
+                <option value="{{ post.pk }}" {% if request.GET.post_id == post.pk|stringformat:"s" %}selected{% endif %}>
+                    {{ post.title }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn">🔍 Применить</button>
+    </div>
+</form>
+
+{% if responses %}
+    {% for response in responses %}
+        <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; background: {% if response.is_accepted %}#d4edda{% else %}#f8f9fa{% endif %};">
+            <p><strong>📌 Объявление:</strong> <a href="{% url 'posts:post_detail' response.post.pk %}">{{ response.post.title }}</a></p>
+            <p><strong>👤 От:</strong> {{ response.author.email }}</p>
+            <p><strong>💬 Текст:</strong> {{ response.text }}</p>
+            <p style="color: #666; font-size: 14px;">📅 {{ response.created_at|date:"d.m.Y H:i" }}</p>
+
+            {% if response.is_accepted %}
+                <p style="color: green;">✅ Отклик принят</p>
+            {% else %}
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <a href="{% url 'responses:response_accept' response.pk %}" class="btn btn-success">✅ Принять</a>
+                    <a href="{% url 'responses:response_delete' response.pk %}" class="btn btn-danger">🗑️ Удалить</a>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% else %}
+    <p>У вас пока нет откликов на объявления.</p>
+{% endif %}
+{% endblock %}

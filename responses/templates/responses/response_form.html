@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Оставить отклик{% endblock %}
+
+{% block content %}
+<h1>💬 Оставить отклик</h1>
+<p>На объявление: <strong>{{ view.kwargs.pk|get_post_title }}</strong></p>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="{{ form.text.id_for_label }}">{{ form.text.label }}</label>
+        {{ form.text }}
+        {% if form.text.errors %}
+            <div style="color: red; font-size: 14px; margin-top: 5px;">
+                {{ form.text.errors }}
+            </div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn">📤 Отправить отклик</button>
+    <a href="{% url 'posts:post_list' %}" class="btn" style="background: #6c757d;">❌ Отмена</a>
+</form>
+{% endblock %}
