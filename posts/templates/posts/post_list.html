@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная - Доска объявлений{% endblock %}
+
+{% block content %}
+<h1>📋 Все объявления</h1>
+
+{% if posts %}
+    {% for post in posts %}
+        <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+            <h3>
+                <a href="{% url 'posts:post_detail' post.pk %}" style="text-decoration: none; color: #1a1a2e;">
+                    {{ post.title }}
+                </a>
+            </h3>
+            <p style="color: #666;">
+                📂 Категория: {{ post.category.name }} | 
+                👤 Автор: {{ post.author.email }} | 
+                📅 {{ post.created_at|date:"d.m.Y H:i" }}
+            </p>
+            <p>{{ post.content|truncatechars:200|safe }}</p>
+            <a href="{% url 'posts:post_detail' post.pk %}" class="btn">Подробнее</a>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>Нет объявлений. Будьте первым!</p>
+{% endif %}
+{% endblock %}

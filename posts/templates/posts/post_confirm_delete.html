@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Удаление объявления{% endblock %}
+
+{% block content %}
+<h1>🗑️ Удаление объявления</h1>
+<p>Вы уверены, что хотите удалить объявление "<strong>{{ object.title }}</strong>"?</p>
+<p style="color: red;">Это действие нельзя отменить!</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">🗑️ Да, удалить</button>
+    <a href="{% url 'posts:post_detail' object.pk %}" class="btn" style="background: #6c757d;">❌ Отмена</a>
+</form>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<h1>{{ post.title }}</h1>
+<p style="color: #666;">
+    📂 Категория: {{ post.category.name }} |
+    👤 Автор: {{ post.author.email }} |
+    📅 Создано: {{ post.created_at|date:"d.m.Y H:i" }}
+    {% if post.updated_at != post.created_at %}
+        | ✏️ Изменено: {{ post.updated_at|date:"d.m.Y H:i" }}
+    {% endif %}
+</p>
+
+<div style="border-top: 1px solid #ddd; padding-top: 20px;">
+    {{ post.content|safe }}
+</div>
+
+<div style="margin-top: 20px;">
+    {% if user == post.author %}
+        <a href="{% url 'posts:post_edit' post.pk %}" class="btn">✏️ Редактировать</a>
+        <a href="{% url 'posts:post_delete' post.pk %}" class="btn btn-danger">🗑️ Удалить</a>
+    {% endif %}
+
+    {% if user.is_authenticated and user != post.author %}
+        <a href="{% url 'responses:response_create' post.pk %}" class="btn">💬 Оставить отклик</a>
+    {% endif %}
+
+    <a href="{% url 'posts:post_list' %}" class="btn" style="background: #6c757d;">⬅️ Назад</a>
+</div>
+
+{% if post.responses.all %}
+    <div style="margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px;">
+        <h3>💬 Отклики ({{ post.responses.count }})</h3>
+        {% for response in post.responses.all %}
+            <div style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 5px; background: {% if response.is_accepted %}#d4edda{% else %}#f8f9fa{% endif %};">
+                <p><strong>{{ response.author.email }}</strong> написал:</p>
+                <p>{{ response.text }}</p>
+                <p style="color: #666; font-size: 14px;">
+                    📅 {{ response.created_at|date:"d.m.Y H:i" }}
+                    {% if response.is_accepted %}
+                        ✅ <strong style="color: green;">Принят</strong>
+                    {% endif %}
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

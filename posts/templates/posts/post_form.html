@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Редактирование{% else %}Новое объявление{% endif %}{% endblock %}
+
+{% block content %}
+<h1>{% if object %}✏️ Редактировать объявление{% else %}📝 Создать объявление{% endif %}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    
+    {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <div style="color: red; font-size: 14px; margin-top: 5px;">
+                    {{ field.errors }}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    
+    <button type="submit" class="btn">
+        {% if object %}💾 Сохранить{% else %}📤 Опубликовать{% endif %}
+    </button>
+    <a href="{% url 'posts:post_list' %}" class="btn" style="background: #6c757d;">❌ Отмена</a>
+</form>
+{% endblock %}
